@@ -1,6 +1,19 @@
+var cors = require('cors')//to make connection between....yes i know 
+const express = require('express')
+
+const app = express()
+const port =process.env.PORT||5000
+
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 8080 });
 
+app.use(cors())
+app.use(express.json())
+
+app.get('/ws', (req, res) => {
+
+  res.send('Hello BhaiLog!')
+  
 wss.on('connection', (ws) => {
   console.log('Client connected');
 
@@ -16,6 +29,13 @@ wss.on('connection', (ws) => {
     console.log('Client disconnected');
   });
 });
+
+})
+
+
+
+
+
 
 
 
