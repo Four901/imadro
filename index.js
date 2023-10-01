@@ -1,4 +1,30 @@
-//npm install websocket
+const express = require('express')
+const app = express()
+const server = require('http').createServer(app);
+const WebSocket = require('ws');
+
+const wss = new WebSocket.Server({ server:server });
+
+wss.on('connection', function connection(ws) {
+  console.log('A new client Connected!');
+  ws.send('Welcome New Client!');
+
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message);
+
+    wss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+    
+  });
+});
+
+app.get('/', (req, res) => res.send('Hello World!'))
+
+server.listen(5000, () => console.log(`Lisening on port :3000`))
+/*//npm install websocket
 var WebSocketServer = require('websocket').server;
 var http = require('http');
 
@@ -55,10 +81,44 @@ wsServer.on('request', function(request) {
     connection.on('close', function(reasonCode, description) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
     });
+});*/
+/*var cors = require('cors')//to make connection between....yes i know 
+const express = require('express')
+
+const app = express()
+const port =process.env.PORT||5000
+
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ port: 8080 });
+
+app.use(cors())
+app.use(express.json())
+
+app.get('/ws', (req, res) => {
+
+  res.send('Hello BhaiLog!')
+  
+wss.on('connection', (ws) => {
+  console.log('Client connected');
+
+  ws.on('message', (message) => {
+    // Handle incoming messages (image data) from the ESP32
+    console.log(`Received: ${message}`);
+    
+    // If you need to send commands to the Arduino
+    // ws.send('Your Arduino Command');
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
 });
 
+})
 
 
+
+*/
 
 
 
